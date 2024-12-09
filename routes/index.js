@@ -5,6 +5,10 @@ const fs = require('fs')
 const { koaBody } = require('koa-body')
 //创建路由实例
 const router = new Router()
+const tempDir = path.join(__dirname, '.././temp')
+if (!fs.existsSync(tempDir)) {
+  fs.mkdirSync(tempDir, { recursive: true }); // 创建目录
+}
 //首页
 router.get('/', async (ctx, next) => {
   ctx.body = 'hello image storage'
