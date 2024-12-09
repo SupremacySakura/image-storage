@@ -3,6 +3,7 @@ const Router = require('@koa/router')
 const path = require('path')
 const fs = require('fs')
 const { koaBody } = require('koa-body')
+
 //创建路由实例
 const router = new Router()
 const tempDir = path.join(__dirname, '.././temp')
@@ -23,7 +24,7 @@ router.post('/upload', koaBody({
 }), async (ctx) => {
   const host = ctx.host
   try {
-    const file = ctx.request.files.file
+    const file = ctx.request.files.file  // 文件
     if (!file) {
       ctx.body = {
         code: 500,
@@ -33,15 +34,22 @@ router.post('/upload', koaBody({
       }
       return
     }
-    const folderName = ctx.request.body.folderName || 'default'
-    const fileName = ctx.request.body.fileName || 'default_name'
+    //文件相关配置
+    const folderName = ctx.request.body.folderName || 'default'  // 设置存储的文件夹
+    const fileName = ctx.request.body.fileName || 'default_name'  // 设置存储的文件名
+    const useDate = ctx.request.body.useDate  // 是否使用日期作为文件夹
     const targetDir = path.join(__dirname, '.././public', folderName)
     if (!fs.existsSync(targetDir)) {
       fs.mkdirSync(targetDir, { recursive: true }) // 创建文件夹
     }
     const oldPath = file.filepath // formidable 自动生成的文件路径
-    const dateString = new Date().getTime().toString()
-    const newPath = path.join(targetDir, `${fileName + dateString}${path.extname(file.originalFilename)}`)
+    let newPath
+    if (useDate === 'no') {
+      newPath = path.join(targetDir, `${fileName}${path.extname(file.originalFilename)}`)
+    } else {
+      const dateString = new Date().getTime().toString()
+      newPath = path.join(targetDir, `${fileName + dateString}${path.extname(file.originalFilename)}`)
+    }
 
     fs.renameSync(oldPath, newPath) // 将文件移动到指定目录
     ctx.body = {
