@@ -5,6 +5,7 @@ const static = require('koa-static')
 const compose = require('koa-compose')
 const cors = require('koa2-cors')
 const bodyParser = require('koa-bodyparser')
+const { showRequest } = require('./middlewares/index')
 //导入其他中间件
 const path = require('path')
 //导入路由
@@ -20,6 +21,7 @@ app.use(async (ctx, next) => {
     ctx.body = err.message
   }
 })
+app.use(compose([showRequest]))
 //跨域处理
 app.use(cors())
 //请求处理
