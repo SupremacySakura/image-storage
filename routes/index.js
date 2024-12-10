@@ -8,7 +8,7 @@ const { koaBody } = require('koa-body')
 const router = new Router()
 const tempDir = path.join(__dirname, '.././temp')
 if (!fs.existsSync(tempDir)) {
-  fs.mkdirSync(tempDir, { recursive: true }); // 创建目录
+  fs.mkdirSync(tempDir, { recursive: true }) // 创建目录
 }
 //首页
 router.get('/', async (ctx, next) => {
@@ -45,10 +45,10 @@ router.post('/upload', koaBody({
     const oldPath = file.filepath // formidable 自动生成的文件路径
     let newPath
     if (useDate === 'no') {
-      newPath = path.join(targetDir, `${fileName}${path.extname(file.originalFilename)}`)
+      newPath = path.join(targetDir, `${fileName}${path.extname(file.originalFilename || 'photo.jpg')}`)
     } else {
       const dateString = new Date().getTime().toString()
-      newPath = path.join(targetDir, `${fileName + dateString}${path.extname(file.originalFilename)}`)
+      newPath = path.join(targetDir, `${fileName + dateString}${path.extname(file.originalFilename || 'photo.jpg')}`)
     }
 
     fs.renameSync(oldPath, newPath) // 将文件移动到指定目录
