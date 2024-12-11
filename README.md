@@ -4,6 +4,8 @@
 ## 使用
 ### 下载
 `git clone https://github.com/SupremacySakura/resource-storage.git`
+### 安装依赖
+`npm install`
 ### 启动
 `node app.js`
 
