@@ -27,8 +27,7 @@ router.post('/upload', koaBody({
     const file = ctx.request.files.file  // 文件
     if (!file) {
       ctx.body = {
-        code: 500,
-        msg: '文件不存在',
+        msg: 'File does not exist!',
         filePath: null,
         code: 500,
       }
@@ -37,7 +36,8 @@ router.post('/upload', koaBody({
     //文件相关配置
     const folderName = ctx.request.body.folderName || 'default'  // 设置存储的文件夹
     const fileName = ctx.request.body.fileName || 'default_name'  // 设置存储的文件名
-    const useDate = ctx.request.body.useDate  // 是否使用日期作为文件夹
+    const useDate = ctx.request.body.useDate || 'yes' // 是否使用日期作为文件夹
+    const ext = ctx.request.body.ext || 'jpg' // 文件后缀
     const targetDir = path.join(__dirname, '.././public', folderName)
     if (!fs.existsSync(targetDir)) {
       fs.mkdirSync(targetDir, { recursive: true }) // 创建文件夹
@@ -45,10 +45,10 @@ router.post('/upload', koaBody({
     const oldPath = file.filepath // formidable 自动生成的文件路径
     let newPath
     if (useDate === 'no') {
-      newPath = path.join(targetDir, `${fileName}${path.extname(file.originalFilename || 'photo.jpg')}`)
+      newPath = path.join(targetDir, `${fileName}.${ext}`)
     } else {
       const dateString = new Date().getTime().toString()
-      newPath = path.join(targetDir, `${fileName + dateString}${path.extname(file.originalFilename || 'photo.jpg')}`)
+      newPath = path.join(targetDir, `${fileName + dateString}.${ext}`)
     }
 
     fs.renameSync(oldPath, newPath) // 将文件移动到指定目录
@@ -60,7 +60,7 @@ router.post('/upload', koaBody({
   } catch (error) {
     console.error(error)
     ctx.body = {
-      message: '上传文件失败',
+      message: 'File uploaded unsuccessfully!',
       error: error.message,
       filePath: null,
       code: 500,
