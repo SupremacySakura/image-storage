@@ -27,7 +27,7 @@ router.post('/upload', koaBody({
     const file = ctx.request.files.file  // 文件
     if (!file) {
       ctx.body = {
-        msg: 'File does not exist!',
+        message: 'File does not exist!',
         filePath: null,
         code: 500,
       }
